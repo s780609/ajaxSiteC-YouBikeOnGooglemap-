@@ -81,7 +81,7 @@ namespace ajaxSiteC.Controllers
         }
         public void GetYouBikeData()
         {
-            ///////////來源資料網址
+            ////////////////////來源資料網址
             //https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.json
             //https://data.taipei/#/dataset/detail?id=8ef1626a-892a-4218-8344-f7ac46e1aa48
             /////////////////////////////////////////////////////////////////////////////////////
