@@ -1,0 +1,231 @@
+﻿
+<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
+            a broad range of clients, including browsers and mobile devices. ASP.NET Web API
+            is an ideal platform for building RESTful applications on the .NET Framework.
+        </p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        Featured
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">ajax demo</h5>
+        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+        <select id="idselect"></select>
+        <button id="btn1" class="btn-primary card-body" value="test">test</button>
+        <button id="btn2" class="btn-dark card-body" value="fetch">fetch</button>
+        <button id="btn3" class="btn-danger card-body" value="fetch">async await</button>
+        <button id="btn4" class="btn-warning card-body" value="fetch">jQuery</button>
+        <button id="btn5" class="btn-info card-body" value="fetch">Json</button>
+        <button id="btn6" class="btn-success card-body" value="fetch">products</button>
+        <button id="btn7" class="btn-success card-body" value="start">start</button>
+        <span id="spn"></span>
+    </div>
+    <select id="selectC"></select>
+    <div id="div">
+        <table id="idTable" border="1"><thead><tr><td>ProductName </td><td>UnitPrice</td><td>QuantityPerUnit</td><td>UnitsInStock </td></tr></thead></table>
+    </div>
+</div>
+<div id="drop"></div>
+@*<table class="table"><tr><th>123</th><th>123</th></tr><tr><td id="id">123</td><td id="name">123</td></tr></table>*@
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+        });
+
+        var sel = document.querySelector("#idselect");
+        var btn1 = document.querySelector("#btn1");
+        var btn7 = document.querySelector("#btn7");
+        btn1.addEventListener("click", function () {
+            //alert("hi");
+            var xhr = new XMLHttpRequest();
+            xhr.addEventListener("load", function () {
+                var datas = JSON.parse(xhr.responseText);
+                console.log(datas);
+            });
+            var drop = xhr
+            xhr.open("GET", `@Url.Action("test","Home")`);
+            xhr.send();
+        });
+        var btn2 = document.querySelector("#btn2");
+        btn2.addEventListener("click", function () {
+            fetch(`@Url.Action("test","Home")`, { method: "GET" }).then(function (result) {
+                if (result.status === 200) {
+
+                    console.log(result);
+                    return Promise.resolve(result.json());
+                }
+                else {
+                    return Promise.reject(new Error(result.statusText));
+                }
+            }).then(function (datas) {
+                $("#drop").empty();
+                $("#drop").append("<select id='droplist'></select>");
+                $.each(datas, function (i, model) {
+                    $("#droplist").append(`<option value=${model.CategoryID}>${model.CategoryName}</option>`);
+                });
+                $("#idTable").empty();
+                $("#idTable").append("<table class='table'><tr><th>CategoryID</th><th>CategoryName</th></tr><tr id='id'></tr></table>");
+                $.each(datas, function (i, model) {
+                    $("#id").append(`<tr><td>${model.CategoryID}</td><td>${model.CategoryName}</td></tr><br>`);
+                    console.log(datas);
+                });
+            }).catch(function (err) {
+                console.log( err);
+            });
+        });
+        var btn3 = document.querySelector("#btn3");
+        btn3.addEventListener("click", async function () {
+            var response = await fetch( `@Url.Action("test","Home")` );
+            await console.log(response);
+            var datas = await response.json();
+            console.log(datas);
+
+            for (let i = 0; i < datas.length;i++) {
+                var opt = new Option(datas[i].CategoryName, datas[i].CategoryID);
+                sel.appendChild(opt);
+            }
+        });
+        $('#btn4').click(function () {
+            $.getJSON(`@Url.Action("test","home")`, function (datas) {
+            console.log(datas);
+        });
+        });
+        $("#btn5").click(function () {
+            var data = {
+                employee: [
+                    { "name": "moke", "email": "a1232gmail", "contact": ["0938123456", "02-789456"] },
+                    { "name": "Mary", "email": "n1452gmail", "contact": ["0938123456", "02-789456"] },
+                    { "name": "GGC", "email": "as4212gmail", "contact": ["0938123456", "02-789456"] }
+                ]
+            };
+            for (let i = 0; i < data.employee.length; i++) {
+                //console.log(data.employee[i].name + data.employee[i].email + data.employee[i].contact[0] + data.employee[i].contact[1]);
+                console.log(data.employee[i].name);
+                console.log(data.employee[i].email);
+                console.log(data.employee[i].contact[0]);
+                console.log(data.employee[i].contact[1]);
+            };
+        });
+        $("#btn6").click(function () {
+            $("#selectC").empty();
+            display();
+        });
+        function display() {
+            fetch(`@Url.Action("test","Home")`)
+                .then(function (rep) {
+                    return Promise.resolve(rep.json());
+                }).then(function (data) {
+                    console.log(data);
+                    var sel = document.querySelector("#selectC");
+                    for (let i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].CategoryName,data[i].CategoryID );
+                        sel.appendChild(opt);
+                    };
+                });
+            tableDisplay();
+        }
+        function tableDisplay() {
+            $("#selectC").change(function (e) {
+                let a = event.target.value;
+                $.getJSON(`@Url.Action("GetProducts","Home")`, { categoryid: a }, function (r) {
+                    $("#idTable").empty();
+                    $("#div").append('<table id ="idTable" border="1"></table>');
+                       $("#idTable").append('<thead><tr><td>ProductName </td><td>UnitPrice</td><td>QuantityPerUnit</td><td>UnitsInStock </td></tr></thead>');
+                       $("#idTable").append('<tbody id="body"></tbody>');
+                    for (let i = 0; i < r.length; i++) {
+                        $("#body").append("<tr>" + "<td>" + r[i].ProductName + "</td>" + "<td>" + r[i].UnitPrice + "</td>" + "<td>" + r[i].QuantityPerUnit + "</td>" + "<td>" + r[i].UnitsInStock + "</td>" + "</tr>");
+                        //var row = table.insertRow(i);
+                        //var c = row.insertCell(0);
+                        //c.innerHTML = r[i].ProductName;
+                        //c = row.insertCell(1);
+                        //c.innerHTML = r[i].UnitPrice;
+                        //c = row.insertCell(2);
+                        //c.innerHTML = r[i].QuantityPerUnit;
+                        //c = row.insertCell(3);
+                        //c.innerHTML = r[i].UnitsInStock;
+                     //   $("#td").append("<tr>" + "<td>" + r[i].ProductName + "</td>" + "<td>" + r[i].UnitPrice + "</td>" +"<td>" + r[i].QuantityPerUnit + "<td>" + r[i].UnitsInStock + "</td>" + "</td>"+"</tr>");
+                    }
+                });
+            });
+        }
+        sel.addEventListener("change", function () {
+            alert(this.value);
+        });
+        //網頁載入立即執行
+        window.addEventListener("load", async function () {
+            var response = await fetch( `@Url.Action("test","Home")` );
+            var datas = await response.json();
+            this.console.log(datas);
+            let sell = document.querySelector("#selectC");
+            for (let i = 0; i < datas.length; i++) {
+                var opt = new Option(datas[i].CategoryName, datas[i].CategoryID);
+                sell.appendChild(opt);
+            }
+            loadProducts();
+            $("#selectC").change(async function (e) {
+                loadProducts();
+            });
+        });
+
+        function loadProducts() {
+            let a = $("#selectC").val();
+                $.getJSON(`@Url.Action("GetProducts","Home")`, { categoryid: a }, async function (r) {
+                    $("#idTable").empty();
+                    $("#div").append('<table id ="idTable" border="1"></table>');
+                       $("#idTable").append('<thead><tr><td>ProductName </td><td>UnitPrice</td><td>QuantityPerUnit</td><td>UnitsInStock </td></tr></thead>');
+                       $("#idTable").append('<tbody id="body"></tbody>');
+                    for (let i = 0; i < r.length; i++) {
+                        $("#body").append("<tr>" + "<td>" + r[i].ProductName + "</td>" + "<td>" + r[i].UnitPrice + "</td>" + "<td>" + r[i].QuantityPerUnit + "</td>" + "<td>" + r[i].UnitsInStock + "</td>" + "</tr>");
+                    }
+                });
+        }
+
+        async function loadProductss() {
+            let res = fetch(`@Url.Action("test","Home")`);
+            let resj = res.json();
+            let sele = document.querySelector("#selectC");
+            let opt = new Option();
+            resj.forEach(x => sele.append(x));
+        }
+
+        var client = null;
+        let spn = document.querySelector("#spn");
+        btn7.addEventListener("click", function () {
+            if (this.value == "start") {
+                this.value = "stop";
+                client = new EventSource(`@Url.Action("Events", "Home")`);
+                client.addEventListener("message", function (event) {
+                    spn.innerHTML = event.data;
+                })
+            }
+            else {
+                this.value = "start";
+                client.close();
+            }
+        });
+
+    </script>
+}

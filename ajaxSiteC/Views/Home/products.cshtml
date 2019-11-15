@@ -1,0 +1,32 @@
+﻿@model ajaxSiteC.Models.Products
+@{
+    ViewBag.Title = "products";
+}
+
+<h2>products</h2>
+
+<table>
+    <thead id="idTable">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model=>model.ProductName);
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitPrice);
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityPerUnit);
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitsInStock);
+            </th>
+        </tr>
+    </thead>
+
+</table>
+
+@section scripts{
+    <script>
+        
+    </script>
+    }

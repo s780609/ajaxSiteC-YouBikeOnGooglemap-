@@ -1,0 +1,22 @@
+﻿@model IEnumerable<ajaxSiteC.Models.Shippers>
+@{
+    ViewBag.Title = "Shippers";
+}
+
+<h2>Shippers</h2>
+<div>
+    @foreach (var item in Model)
+    {
+        <li> @Html.DisplayFor(model => item.CompanyName)</li>
+        <li>@Html.DisplayFor(model => item.ShipperID)</li>
+    }
+</div>
+
+@section scripts{
+    <script>
+        $.getJSON(`@Url.RouteUrl("DefaultApi", new { httproute="", controller="Shippers"})`, function (datas) {
+            console.log(datas);
+        });
+    </script>
+
+}

@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "YouBike";
+}
+
+<h2>YouBike</h2>
+<div id="map">
+
+</div>
+<table class="table border-dark">
+    <thead>
+        <tr>
+            <td>場站名稱</td>
+            <td>中文場站區域</td>
+            <td>場站總停車格</td>
+            <td>可借車位數</td>
+        </tr>
+    </thead>
+    <tbody id="tb"></tbody>
+</table>
+
+
+@section scripts{
+
+
+
+    <script>
+        var client = null;
+        $(document).ready(function () {
+            client = new EventSource(`@Url.Action("GetYouBikeData", "Home")`);
+            client.addEventListener("open", function () {
+                alert("Success");
+            });
+            client.addEventListener("message", function (event) {
+                var json = JSON.parse(event.data);
+                var t = document.querySelector("#tb");
+                var frag = new DocumentFragment;
+                t.innerHTML = "";
+                for (var item of json) {
+                    let row = document.createElement("tr");
+
+                    let cell = document.createElement('td');
+                    let text = document.createTextNode(item.sna);
+                    cell.appendChild(text);
+                    row.appendChild(cell);
+
+                    let cell1 = document.createElement('td');
+                    let text1 = document.createTextNode(item.sarea);
+                    cell1.appendChild(text1);
+                    row.appendChild(cell1);
+
+                    let cell2 = document.createElement('td');
+                    let text2 = document.createTextNode(item.tot);
+                    cell2.appendChild(text2);
+                    row.appendChild(cell2);
+
+                    let cell3 = document.createElement('td');
+                    let text3 = document.createTextNode(item.sbi);
+                    cell3.appendChild(text3);
+                    row.appendChild(cell3);
+
+                    frag.appendChild(row);
+                }
+                t.appendChild(frag);
+
+               var uluru = { lat: parseFloat(json[0].lat), lng: parseFloat(json[0].lng)  };
+                // The map, centered at Uluru
+                var map = new google.maps.Map(
+                    document.getElementById('map'), { zoom: 4, center: uluru });
+                // The marker, positioned at Uluru
+                var marker = new google.maps.Marker({ position: uluru, map: map });
+                $.each(json, function (i, item) {
+                    marker = new google.maps.Marker({
+                        'position': new google.maps.LatLng(item.lat, item.lng),
+                        'map': map,
+                        'title': item.sno
+                    });
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<div class='infoDiv'><h2>" +
+                        item.PlaceName + "</h2>" + "<div><h4>Opening hours: " +
+                        item.OpeningHours + "</h4></div></div>"
+                });
+                google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                }); 
+            });
+        })
+        function GoogleMap() {
+            fetch(`@Url.Action("GetYouBikeData", "Home")`)
+                .then(function (response) {
+                    return response.json();
+                }).then(function ( response ) {
+
+                }).catch(function () {
+
+                })
+                ;
+            var map = new GMap2
+        }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8cUrq8FjGzZKfrB1wypwmY2eTJ5WwWgU&callback=initMap"
+            async defer></script>
+}
+
+@section style{
+    <style>
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 400px; /* The height is 400 pixels */
+            width: 100%; /* The width is the width of the web page */
+        }
+    </style>
+}
