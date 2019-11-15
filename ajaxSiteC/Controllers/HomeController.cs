@@ -117,10 +117,6 @@ namespace ajaxSiteC.Controllers
             }
             return View(shippers);
         }
-        //public ActionResult GoogleMap()
-        //{
-
-        //}
     }
 }
 

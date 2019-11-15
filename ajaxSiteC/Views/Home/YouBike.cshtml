@@ -27,15 +27,19 @@
     <script>
         var client = null;
         $(document).ready(function () {
+            //呼叫用來取得youBike資料的方法，並使用定時呼叫功能 EventSource
             client = new EventSource(`@Url.Action("GetYouBikeData", "Home")`);
             client.addEventListener("open", function () {
                 alert("Success");
             });
+            //使用message事件
             client.addEventListener("message", function (event) {
+                //把傳回來的資料轉成Json
                 var json = JSON.parse(event.data);
                 var t = document.querySelector("#tb");
                 var frag = new DocumentFragment;
                 t.innerHTML = "";
+                //把JSON資料一筆一筆取出來放進Table
                 for (var item of json) {
                     let row = document.createElement("tr");
 
@@ -62,13 +66,20 @@
                     frag.appendChild(row);
                 }
                 t.appendChild(frag);
-
+                /////////////////////////////////////////
+                //google地圖顯示
+                //參考網址
+                //https://developers.google.com/maps/documentation/javascript/tutorial
+                ///////////////////////////////////////////
+                //建立座標
                var uluru = { lat: parseFloat(json[0].lat), lng: parseFloat(json[0].lng)  };
-                // The map, centered at Uluru
+                //建立地圖物件
+                //把該DIV 綁定給GOOGLEMAP 並給予地圖大小，與座標值
                 var map = new google.maps.Map(
-                    document.getElementById('map'), { zoom: 4, center: uluru });
-                // The marker, positioned at Uluru
+                    document.getElementById('map'), { zoom: 13, center: uluru });
+                //建立座標圖式物件
                 var marker = new google.maps.Marker({ position: uluru, map: map });
+                //將所有的YOUBIKE場站位置顯示在地圖上
                 $.each(json, function (i, item) {
                     marker = new google.maps.Marker({
                         'position': new google.maps.LatLng(item.lat, item.lng),
@@ -76,14 +87,17 @@
                         'title': item.sno
                     });
                 });
+                //建立物件
+                //顯示該地圖座標的資訊
                 var infowindow = new google.maps.InfoWindow({
                     content: "<div class='infoDiv'><h2>" +
                         item.PlaceName + "</h2>" + "<div><h4>Opening hours: " +
                         item.OpeningHours + "</h4></div></div>"
                 });
+                //將CLICK事件綁給該座標
                 google.maps.event.addListener(marker, 'click', function () {
                     infowindow.open(map, marker);
-                }); 
+                });
             });
         })
         function GoogleMap() {
@@ -100,6 +114,7 @@
         }
 
     </script>
+    @*GOOGLE 地圖API服務 ，必須申請比使用金鑰                  !下方KEY = 為自己申請的金鑰        *@            
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8cUrq8FjGzZKfrB1wypwmY2eTJ5WwWgU&callback=initMap"
             async defer></script>
 }
