@@ -7,8 +7,10 @@
 <div>
     @foreach (var item in Model)
     {
+    <ul>
         <li> @Html.DisplayFor(model => item.CompanyName)</li>
         <li>@Html.DisplayFor(model => item.ShipperID)</li>
+    </ul> 
     }
 </div>
 
