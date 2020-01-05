@@ -1,2 +1,2 @@
 # ajaxSiteC
- ajax作業練習
+ YOUBIKEAPI地圖讀取
